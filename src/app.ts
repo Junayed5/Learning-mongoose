@@ -5,23 +5,6 @@ export const app: Application = express();
 
 app.use(express.json());
 
-const noteSchema = new Schema({
-  title: { type: String, required: true, trim: true },
-  description: { type: String, default: "" },
-  category: {
-    type: String,
-    enum: ["personal", "work", "study", "other"],
-    default: "personal",
-  },
-  pinned: { type: Boolean, default: false },
-  tags: {
-    label: { type: String, required: true },
-    color: { type: String, default: "gray" },
-  },
-});
-
-const Note = model("Note", noteSchema);
-
 app.get("/", (req: Request, res: Response) => {
   res.send("Welcome to reality");
 });
@@ -65,3 +48,30 @@ app.get("/notes/:noteId", async (req: Request, res: Response) => {
   });
 });
 
+app.patch('/notes/:noteId', async (req: Request, res: Response) =>{
+  const noteId = req.params.noteId;
+  const updatedData = req.body;
+
+  // const updateNote = await Note.findOneAndUpdate({_id: noteId}, updatedData, {new: true});
+  // const updateNote = await Note.updateOne({_id: noteId}, updatedData, {new: true});
+  const updateNote = await Note.findByIdAndUpdate(noteId, updatedData, {new: true});
+
+  res.status(201).json({
+    success: true,
+    message: "Update single data",
+    updateNote,
+  });
+});
+app.delete('/notes/:noteId', async (req: Request, res: Response) =>{
+  const noteId = req.params.noteId;
+
+  // const updateNote = await Note.findOneAndDelete({_id: noteId}, updatedData, {new: true});
+  // const updateNote = await Note.deleteOne({_id: noteId}, updatedData, {new: true});
+  const updateNote = await Note.findByIdAndDelete(noteId);
+
+  res.status(201).json({
+    success: true,
+    message: "Delete single data",
+    updateNote,
+  });
+});
