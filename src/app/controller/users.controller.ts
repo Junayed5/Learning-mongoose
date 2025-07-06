@@ -12,6 +12,16 @@ userRouter.get("/", async (req: Request, res: Response) => {
   });
 });
 
+userRouter.get('/:id', async (req: Request, res: Response) => {
+  const id = req.params.id;
+  const user = await User.findById(id);
+
+  res.status(200).send({
+    success: true,
+    message: "Get a specific User successfully",
+    user,
+  });
+})
 userRouter.post("/create-user", async (req: Request, res: Response) => {
   const data = req.body;
   const user = await User.create(data);
